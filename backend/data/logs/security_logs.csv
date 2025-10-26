@@ -1,0 +1,9 @@
+timestamp,user_id,action,status,ip_address,details
+2024-10-28T09:01:15Z,jane.d,login,failed,198.51.100.45,invalid password
+2024-10-28T09:01:22Z,jane.d,login,failed,198.51.100.45,invalid password
+2024-10-28T09:01:45Z,jane.d,login,success,198.51.100.45,
+2024-10-28T09:05:30Z,alex.m,login,success,203.0.113.12,
+2024-10-28T09:15:02Z,admin_bot,api_call,success,127.0.0.1,ran daily cleanup
+2024-10-28T09:30:11Z,sam.k,login,failed,104.22.15.8,account locked
+2024-10-28T09:32:00Z,alex.m,file_access,success,203.0.113.12,accessed /docs/policy.pdf
+2024-10-28T10:01:00Z,jane.d,logout,success,198.51.100.45,

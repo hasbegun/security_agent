@@ -1,0 +1,16 @@
+fastapi[all]
+aiofiles
+asyncio
+starlette ## middleware for FastAPI
+uvicorn
+langchain[all]
+langchain-openai
+langchain-ollama
+langchain-core
+langchain-community
+langchain-classic
+python-dotenv
+faiss-cpu
+unstructured[md]
+tiktoken
+pytest
