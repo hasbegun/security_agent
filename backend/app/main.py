@@ -9,7 +9,7 @@ from pydantic import BaseModel
 # Import our new agent creator and the old tool initializer
 from .tools import get_knowledge_base
 from .agent import create_security_agent
-# from .security import is_injection_attempt, log_audit_event, AUDIT_LOG_STORE, AuditLogEntry
+from .security import AUDIT_LOG_STORE, is_injection_attempt, log_audit_event,  AuditLogEntry
 from typing import List
 
 import logging
@@ -31,8 +31,6 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     response: str
 
-
-# --- FastAPI App Initialization ---
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -93,11 +91,12 @@ async def handle_chat(request: Request, chat_request: ChatRequest):
     query = chat_request.query
     # print('>>> ', user_id, query)
     # any user try to inject forbiden proompts, reject and log it
-    # if is_injection_attempt(chat_request.query):
-    #     # log_audit_event(user_id, query, "InjectionBlocked", {"System": "Rejected due to PI keywords."}, "Rejected")
-    #     return ChatResponse(response="Sorry... I am not able to process your request.")
+    if is_injection_attempt(chat_request.query):
+        log_audit_event(user_id, query, "InjectionBlocked", {"System": "Rejected due to PI keywords."}, "Rejected")
+        return ChatResponse(response="Sorry... I am not able to process your request.")
 
-    # log_id = log_audit_event(user_id, "QueryReceived", query, {"System": "Processing started."}, 'Received')
+    log_id = log_audit_event(user_id, "QueryReceived", query, {"System": "Processing started."}, 'Received')
+
     agent_executor = request.app.state.agent_executor
     try:
         # CORE AGENTIC CALL
@@ -111,27 +110,26 @@ async def handle_chat(request: Request, chat_request: ChatRequest):
         })
 
         ai_response = response.get("output", "Sorry, I encountered an error.")
-        # log_audit_event(user_id, query, "QueryCompleted", {"Agent": ai_response}, log_id)
+        log_audit_event(user_id, query, "QueryCompleted", {"Agent": ai_response}, log_id)
         return ChatResponse(response=ai_response)
 
     except Exception as e:
         # log the full, detailed error on the server side for debugging
-        logger.error(f"!!! Error during agent invocation: {e}")
+        logger.error(f"Error during agent invocation: {e}")
 
         ### enable this for dev. print the error on the console.
         # traceback.print_exc()
         #######################
 
-        # log_audit_event(user_id, "QueryFailed", query, "Agent", f"Execution failed: {e}", log_id)
-
+        log_audit_event(user_id, "QueryFailed", query, "Agent", f"Execution failed: {e}", log_id)
         # a generic, user-friendly message for the frontend
         user_friendly_error = "Sorry, I encountered an issue processing your request. Please try rephrasing or asking something else."
         return ChatResponse(response=user_friendly_error)
 
-# @app.get("/api/audit-logs", response_model=List[AuditLogEntry])
-# def get_audit_logs():
-#     """Returns the list of in-memory audit logs for review."""
-#     return AUDIT_LOG_STORE
+@app.get("/api/audit-logs", response_model=List[AuditLogEntry])
+def get_audit_logs():
+    """Returns the list of in-memory audit logs for review."""
+    return AUDIT_LOG_STORE
 
 if __name__ == "__main__":
     import uvicorn
