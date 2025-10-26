@@ -91,7 +91,7 @@ async def handle_chat(request: Request, chat_request: ChatRequest):
     logger.debug(f"Received query from user '{chat_request.user_id}': {chat_request.query}")
     user_id = chat_request.user_id or "anonymous"
     query = chat_request.query
-    print('>>> ', user_id, query)
+    # print('>>> ', user_id, query)
     # any user try to inject forbiden proompts, reject and log it
     # if is_injection_attempt(chat_request.query):
     #     # log_audit_event(user_id, query, "InjectionBlocked", {"System": "Rejected due to PI keywords."}, "Rejected")
