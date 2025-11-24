@@ -155,5 +155,5 @@ Navigate into the `frontend` directory and install dependencies:
 Free to use without warrantees.
 
 ### Story
-I was asked (in the interview) to implement the AI chat bot that handles tool selections: security incident tool and log loop up tool. Otherwise just do chat like ChatGPT. This is the answer (source) and is considered a good answer. Hope this helps others looking for a SW Engineering job.
+I was asked (in the interview) to implement the AI chat bot that handles tool selections: security incident tool and log look up tool. Otherwise just do chat like ChatGPT. This is the answer (source) and is considered a good answer. Hope this helps others looking for a SW Engineering job.
 
