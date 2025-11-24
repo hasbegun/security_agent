@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+
+  ## comment this as ollama is running on local.
+  # Ollama Service for LLM and Embeddings
+  # ollama:
+  #   image: ollama/ollama
+  #   container_name: ollama_service
+  #   volumes:
+  #     - ollama_data:/root/.ollama
+  #   ports:
+  #     - "11434:11434"
+  #   # Uncomment this for  NVIDIA GPU
+  #   # deploy:
+  #   #   resources:
+  #   #     reservations:
+  #   #       devices:
+  #   #         - driver: nvidia
+  #   #           count: all
+  #   #           capabilities: [gpu]
+  #   command: ["serve"]
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:11434"]
+  #     interval: 5s
+  #     timeout: 3s
+  #     retries: 5
+
+  # One-time service to pull models
+  # model_puller:
+  #   image: ollama/ollama
+  #   container_name: model_puller
+  #   depends_on:
+  #     ollama:
+  #       condition: service_healthy
+  #   volumes:
+  #     - ollama_data:/root/.ollama
+  #   command: >
+  #     /bin/sh -c "
+  #     echo 'Pulling required models...' &&
+  #     ollama pull qwen2.5-coder:32b &&
+  #     ollama pull nomic-embed-text &&
+  #     echo 'Model pulling complete.'
+  #     "
+  #######################################################
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.backend
+    container_name: backend_service
+    ports:
+      - "8000:8000"
+    environment:
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL}
+    volumes:
+      - ./backend:/app
+      - ./backend/data:/app/data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.frontend
+    container_name: frontend_service
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
