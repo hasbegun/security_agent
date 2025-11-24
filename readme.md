@@ -156,4 +156,5 @@ Free to use without warrantees.
 
 ### Story
 I was asked (in the interview) to implement the AI chat bot that handles tool selections: security incident tool and log look up tool. Otherwise just do chat like ChatGPT. This is the answer (source) and is considered a good answer. Hope this helps others looking for a SW Engineering job.
-
+backend: free to choose (by candidate.)
+frontend: React (but you can choose others for your interview.) Front end is pretty simple. Only one page. No auth handling. Just interact with the backend.
