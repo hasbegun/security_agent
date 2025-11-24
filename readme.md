@@ -149,3 +149,11 @@ Navigate into the `frontend` directory and install dependencies:
 | Audit Logging	| Implemented (In-Memory).	| Low Traceability. Logs are lost on container restart.	| Persistence: Integrate an enterprise logging tool (e.g., Splunk, ELK stack) or a cloud database (Firestore/Postgres) for immutable, off-host log storage. |
 | Tool Abuse (DoS)	| Partially Mitigated. (max_iterations=5)	| Medium. Agent could execute the RAG/Log tool in an infinite loop, causing a denial of service (DoS) on Ollama/CPU resources.	| Rate Limiting: Implement rate limiting on the /api/chat endpoint (e.g., 5 requests per minute per user_id or IP). Implement token usage limits per query. |
 | Output Hallucination	| Unmitigated.	| High. The LLM may invent non-existent policies or fabricate log events, leading to incorrect incident response actions.	| Grounding: Explicitly instruct the agent to prefix all retrieved knowledge with a source citation ([Source: phishing_policy.md]). Use RAG scores to enforce high-confidence responses and refuse to answer if grounding is poor. |
+
+
+# License
+Free to use without warrantees.
+
+### Story
+I was asked (in the interview) to implement the AI chat bot that handles tool selections: security incident tool and log loop up tool. Otherwise just do chat like ChatGPT. This is the answer (source) and is considered a good answer. Hope this helps others looking for a SW Engineering job.
+
